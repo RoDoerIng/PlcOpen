@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlcOpen", "PlcOpen\PlcOpen.csproj", "{4154F216-90E2-4899-BB69-5595677DFDFC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{3476ACE7-2003-48C1-97E9-267D1FF99FD7}"
+	ProjectSection(SolutionItems) = preProject
+		..\data\SingleResponsibility.xml = ..\data\SingleResponsibility.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
