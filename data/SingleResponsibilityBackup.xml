@@ -1,0 +1,1893 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP10 Patch 4" creationDateTime="2017-07-22T20:32:32.9692432" />
+  <contentHeader name="SingleResponsibility.project" modificationDateTime="2017-06-30T11:24:00.4798052">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="DebouncedDigitalSensor" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="diSensor">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">reference to the digital input</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maskOccupied">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">mask for the state occupied</xhtml>
+              </documentation>
+            </variable>
+            <variable name="debouncer">
+              <type>
+                <derived name="TON" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ton to debounce the sensor signal</xhtml>
+              </documentation>
+            </variable>
+            <variable name="debounceTime">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">debounce time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="state">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">sensor state </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>ISensor</Implements>
+                <Implements>IEdge</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isOccupied" ObjectId="c8615e63-7ab1-4129-adcd-e650e7eaa5c1">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isOccupied := isSensorInState(state := THIS^.maskOccupied);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFree" ObjectId="d8bad9e4-376d-4c5d-a38f-a8d85915d71f">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFree := isSensorInState(state := (NOT THIS^.maskOccupied));</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isRising" ObjectId="0c72f464-c2f7-451d-863b-f1338adee3b7">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isRising 	:= (THIS^.isOccupied() AND (NOT THIS^.state));
+THIS^.updateState();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isFalling" ObjectId="d50afd8d-7625-4b44-bec7-47893ba2ae07">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isFalling 	:= (THIS^.isFree() AND THIS^.state);
+THIS^.updateState();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="2f7fe2d4-9d87-4906-950c-00bbe824f29e">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="diSensor">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">reference to the digital input</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="maskOccupied">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">mask for the state occupied</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.diSensor		REF=diSensor; 
+THIS^.maskOccupied	:= maskOccupied;
+THIS^.debounceTime	:= T#30ms;
+THIS^.state			:= (THIS^.diSensor = THIS^.maskOccupied);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isSensorInState" ObjectId="299f2d2b-b37f-4956-97c6-ac8c915fdbcb">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">requeseted sensor state</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+                    <AccessModifiers Protected="true" />
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.debouncer(IN := (THIS^.diSensor = state), PT := THIS^.debounceTime, Q =&gt; isSensorInState);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="updateState" ObjectId="75fffe19-960d-43d7-a10b-494c17f0abfd">
+              <interface>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+                    <AccessModifiers Protected="true" />
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.state := THIS^.isOccupied();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b4be4fd4-dd51-4d62-a3df-50af1c0284b8</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SmemaInterface" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="machineStateHndl">
+              <type>
+                <derived name="IMachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine state handler to check if receiving is allowed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="partnerIsRdy">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ready signal from the interface partner</xhtml>
+              </documentation>
+            </variable>
+            <variable name="weAreRdy">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ready signal to the interface partner</xhtml>
+              </documentation>
+            </variable>
+            <variable name="transferCondition">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">external condition for transfer is possible</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maskPartnerIsRdy">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">bitmask for partner is ready</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maskWeAreRdy">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">bitmask for we are ready	</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>ISmema</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="setCondition" ObjectId="69f96301-1207-4529-a4d3-3055576b3e35">
+              <interface>
+                <inputVars>
+                  <variable name="smemaCondition">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">must be ture to activate the smema interface</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.transferCondition	:= transferCondition;
+IF (NOT THIS^.transferCondition) THEN
+	THIS^.weAreRdy := (NOT THIS^.maskWeAreRdy);
+END_IF;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isTransferActive" ObjectId="ba2ae10a-64f3-404e-bca5-334c1f9b7eb0">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (THIS^.transferCondition AND THIS^.machineStateHndl.isMachineInAutomatic()) THEN
+	THIS^.weAreRdy := THIS^.maskWeAreRdy;
+ELSE
+	THIS^.weAreRdy := (NOT THIS^.maskWeAreRdy);
+END_IF;		
+isTransferActive	  := ((THIS^.weAreRdy = THIS^.maskWeAreRdy) AND (THIS^.maskPartnerIsRdy = THIS^.maskPartnerIsRdy));
+</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="bff28365-e450-4978-8d65-5c42a1c8afe0">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="partnerIsRdy">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">ready signal from the interface partner</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="weAreRdy">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">ready signal to the interface partner</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="maskPartnerIsRdy">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">bitmask for partner is ready</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="maskWeAreRdy">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">bitmask for we are ready	</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="machineStateHndl">
+                    <type>
+                      <derived name="IMachineState" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">the machine is in machine state automatic</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.partnerIsRdy	    REF= partnerIsRdy;
+THIS^.weAreRdy		    REF= weAreRdy;
+THIS^.machineStateHndl	:= 	 machineStateHndl;
+THIS^.transferCondition	:=	 FALSE;
+THIS^.maskPartnerIsRdy	:=   maskPartnerIsRdy;
+THIS^.maskWeAreRdy		:=	 maskWeAreRdy;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>facc9cc0-fb52-4a8b-b6f6-a76b91c2e1d0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SmemaReceiver" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="smeaInterface">
+              <type>
+                <derived name="ISmema" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">smema interface for the receiver</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>IReciverInterface</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isReceiving" ObjectId="e7a7bd02-822c-4762-b05e-45d571eb6446">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isReceiving	  := (THIS^.smeaInterface.isTransferActive());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="readExtCondition2Rec" ObjectId="31d78c54-1785-4c8b-b286-426985a64b7e">
+              <interface>
+                <returnType>
+                  <derived name="IReciverInterface" />
+                </returnType>
+                <inputVars>
+                  <variable name="receiveCondition">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">condition 4 ready to receive</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">inject conditions for ready to receive</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.smeaInterface.setCondition(smemaCondition := receiveCondition);
+readExtCondition2Rec	:= THIS^;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="e933a24f-3fe2-43bd-9206-301a1c862b03">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="smeaInterface">
+                    <type>
+                      <derived name="ISmema" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">smema interface for the receiver</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.smeaInterface	:= 	 smeaInterface ;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>f25e9816-ed8a-4311-91fe-c9a6ec2a68ed</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SmemaSender" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="smeaInterface">
+              <type>
+                <derived name="ISmema" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">smema interface for the sender</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>ISenderInterface</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="readExtCondition2Snd" ObjectId="a420a089-da7b-44bc-b1fe-82f00e41a459">
+              <interface>
+                <returnType>
+                  <derived name="ISenderInterface" />
+                </returnType>
+                <inputVars>
+                  <variable name="sendCondition">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">condition 4 ready 2 send</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">inject conditions for ready to receive</xhtml>
+                </documentation>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.smeaInterface.setCondition(smemaCondition := sendCondition);
+readExtCondition2Snd := THIS^;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isSending" ObjectId="04a20bc2-dc04-4607-95c4-a3e3ba185e52">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isSending	  := (THIS^.smeaInterface.isTransferActive());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="173f5119-02b7-4d55-b81b-e2a4ef63eba1">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="smeaInterface">
+                    <type>
+                      <derived name="ISmema" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">smema interface for the sender</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.smeaInterface	:= 	 smeaInterface ;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>922a5d51-806f-4ece-9cc6-ab1e9342fb09</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Conveyor2ndTry" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="slowSensor">
+              <type>
+                <derived name="ISensor" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">sensor to slow down</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopSensor">
+              <type>
+                <derived name="ISensor" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">sensor to stop</xhtml>
+              </documentation>
+            </variable>
+            <variable name="senderInterface">
+              <type>
+                <derived name="ISenderInterface" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">interface to send</xhtml>
+              </documentation>
+            </variable>
+            <variable name="receiverInterface">
+              <type>
+                <derived name="IReciverInterface" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">interface to receive</xhtml>
+              </documentation>
+            </variable>
+            <variable name="drive">
+              <type>
+                <derived name="ITwoStageLinearDrive" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">drive to run the conveyor</xhtml>
+              </documentation>
+            </variable>
+            <variable name="machineState">
+              <type>
+                <derived name="IMachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">just the machine state</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>IRunnable</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="run" ObjectId="794b9617-307d-401f-a5db-09714e658970">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">(*recive part*)
+IF (THIS^.receiverInterface.readExtCondition2Rec(receiveCondition := THIS^.isEmpty()).isReceiving()) THEN
+	THIS^.drive.fastForward();
+(*send part*)
+ELSIF (THIS^.senderInterface.readExtCondition2Snd(sendCondition := (THIS^.isAligned() OR THIS^.isOccupiedOutfeed())).isSending()) THEN
+	THIS^.drive.fastForward();
+(*align part*)
+ELSIF (THIS^.isOccupiedInfeed() AND THIS^.machineState.isMachineInAutomatic()) THEN
+	THIS^.drive.forward();
+ELSE
+	THIS^.drive.stop();
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="402c3113-696e-4897-a330-7cbdaa3c320e">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="slowSensor">
+                    <type>
+                      <derived name="ISensor" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">sensor to slow down</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="stopSensor">
+                    <type>
+                      <derived name="ISensor" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">sensor to stop</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="senderInterface">
+                    <type>
+                      <derived name="ISenderInterface" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">interface to send</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="receiverInterface">
+                    <type>
+                      <derived name="IReciverInterface" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">interface to receive</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="drive">
+                    <type>
+                      <derived name="ITwoStageLinearDrive" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">drive to run the conveyor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="machineState">
+                    <type>
+                      <derived name="IMachineState" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">just the machine state</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">//sensors
+THIS^.slowSensor	    := slowSensor; //sensor to slow down
+THIS^.stopSensor	    := stopSensor; //sensor to stop
+//interfaces
+THIS^.senderInterface	:= senderInterface	; //interface to send
+THIS^.receiverInterface	:= receiverInterface; //interface to receive
+//conveyor drive
+THIS^.drive 			:= drive; //drive to run the conveyor
+//machine state
+THIS^.machineState		:= machineState; //just the machine state</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isEmpty" ObjectId="a4d6a243-5f46-4f56-af82-11a3eb5a1b7d">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isEmpty := (THIS^.slowSensor.isFree() AND THIS^.stopSensor.isFree());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isAligned" ObjectId="412d3c38-7904-45b8-9f50-1ca753e1d63b">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isAligned := (THIS^.slowSensor.isOccupied() AND THIS^.stopSensor.isOccupied());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isOccupiedInfeed" ObjectId="c673acfe-2464-43ef-86b4-900fa0eb33c9">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isOccupiedInfeed := (THIS^.slowSensor.isOccupied() AND THIS^.stopSensor.isFree());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="isOccupiedOutfeed" ObjectId="847d749d-7755-4210-8894-c1e8bc4d46ed">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">isOccupiedOutfeed := (THIS^.slowSensor.isFree() AND THIS^.stopSensor.isOccupied());</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>9d422d75-dd12-4a2e-ae88-a17bd418141a</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Acme2StageDrive" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="cw">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">run the motor clockwise, if it false the motor will run counter clockwise</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fast">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">run the motor fast, if it false will the motor running slow</xhtml>
+              </documentation>
+            </variable>
+            <variable name="start">
+              <type>
+                <derived name="REFERENCE TO BOOL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">run start the motor</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maskFwd">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">mask to define forward or rather clockwise</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>ACommonTwoStageDrive</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stop" ObjectId="25c98963-25a7-48fc-be8d-3afb2ccf1932">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.start := FALSE;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastForward" ObjectId="8162284f-1a1f-4ccc-b2ed-ec0ef75def83">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.StartMotor(direction := THIS^.maskFwd, velocity := TRUE);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="forward" ObjectId="0e9e97ec-0783-40fb-bbfa-97a819ec675d">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.StartMotor(direction := THIS^.maskFwd, velocity := FALSE);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastBackward" ObjectId="c1bac4be-d0de-4a66-8c67-95bf2dd8fa39">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.StartMotor(direction := (NOT THIS^.maskFwd), velocity := TRUE);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="backward" ObjectId="c0da56eb-2a8b-4807-a095-7b6c5e1a991c">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.StartMotor(direction := (NOT THIS^.maskFwd), velocity := FALSE);</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastClockwise" ObjectId="0fc8a6ce-3d48-402d-b1f3-a5b2355bac21">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.fastForward();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="clockwise" ObjectId="7669b03a-0c72-425d-a5ce-aa0def713685">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.forward();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastCounterClockwise" ObjectId="0c977135-8dcd-494b-8cb2-30125d56bb8b">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.fastBackward();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="counterClockwise" ObjectId="d1345282-80b3-45be-8505-d37676325d09">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.backward();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="executeEStop" ObjectId="e65f3053-355a-4a41-853e-aa2d9c8da153">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.stop();</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="8b422f1f-6504-4cc7-9c28-fd030d9f06d6">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="cw">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">run the motor clockwise, if it false the motor will run counter clockwise</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="fast">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">run the motor fast, if it false will the motor running slow</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="start">
+                    <type>
+                      <derived name="REFERENCE TO BOOL" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">run start the motor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="maskFwd">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">mask to define forward or rather clockwise</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.cw             REF= cw ;
+THIS^.fast           REF= fast ;
+THIS^.start          REF= start ;
+THIS^.maskFwd      	 :=   maskFwd;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="StartMotor" ObjectId="9e36ebfe-b76a-42c0-bae8-7f22b5b661c3">
+              <interface>
+                <inputVars>
+                  <variable name="direction">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">direction flag</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="velocity">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity flag</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+                    <AccessModifiers Protected="true" />
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.cw 	 	:= direction;
+THIS^.fast   	:= velocity;
+THIS^.start  	:= TRUE;</xhtml>
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b8335d88-2d7b-483b-92e1-48c04da77f94</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ACommonTwoStageDrive" pouType="functionBlock">
+        <interface>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Implements>ITwoStageLinearDrive</Implements>
+                <Implements>ITwoStageRotationDrive</Implements>
+                <Implements>IEStoppable</Implements>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stop" ObjectId="c2a92686-3cc1-4419-b246-fb3827f49f0d">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastForward" ObjectId="75903dbb-6ad4-4615-aee4-e8b796bd96b6">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="forward" ObjectId="64c93dce-4388-42ba-a118-268cf32825bf">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastBackward" ObjectId="1ea5b2c1-2187-45e1-8c93-9794e509c588">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="backward" ObjectId="b88c6e1d-b74a-481a-9fbd-04309619189d">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastClockwise" ObjectId="38307ffc-5e50-4fb2-8e5f-815807b6f518">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="clockwise" ObjectId="43a9f140-eee9-4855-9d03-9f428777df17">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="fastCounterClockwise" ObjectId="c630041a-6f8f-40bc-90eb-af8bc3b86202">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="counterClockwise" ObjectId="ebb01047-f7bc-4277-bf79-f4b67b61c0a7">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="executeEStop" ObjectId="ec4a429f-5e84-4ec3-9a03-612db1c89e95">
+              <interface />
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="FB_INIT" ObjectId="4235c862-8fa5-4188-9de8-7c70a9973196">
+              <interface>
+                <inputVars>
+                  <variable name="bInitRetains">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> initializing of retain-variable</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bInCopyCode">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> instance is copied to copy-code</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                </ST>
+              </body>
+              <addData />
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <LinkAlways>true</LinkAlways>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>6ed7a201-c2f8-474e-a7df-319702eec6ab</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="Device">
+        <resource name="Application">
+          <task name="MainTask" interval="PT0.02S" priority="1">
+            <pouInstance name="PLC_PRG" typeName="">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </documentation>
+            </pouInstance>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+                <TaskSettings KindOfTask="Cyclic" Interval="t#20ms" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                  <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+                </TaskSettings>
+              </data>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>2413f542-0316-481f-b8ae-9671d32da7e9</ObjectId>
+              </data>
+            </addData>
+          </task>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+              <pou name="PLC_PRG" pouType="program">
+                <interface />
+                <body>
+                  <ST>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+                  </ST>
+                </body>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>ff3c9587-4c2d-4ea2-9caf-47eace0bfa18</ObjectId>
+                  </data>
+                </addData>
+              </pou>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+              <Libraries>
+                <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.10.0 (System)" />
+                <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+                <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+                <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, 3.5.5.0 (3S - Smart Software Solutions GmbH)" />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                    <ObjectId>d3a42130-9d0e-4a44-a279-c07a94ca0474</ObjectId>
+                  </data>
+                </addData>
+              </Libraries>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>2244d426-13f3-4a7f-ae54-c81178c42401</ObjectId>
+            </data>
+          </addData>
+        </resource>
+        <addData>
+          <data name="Device" handleUnknown="discard">
+            <Device xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="">
+              <DeviceType>
+                <DeviceIdentification>
+                  <Type>4096</Type>
+                  <Id>0000 0001</Id>
+                  <Version>3.5.10.40</Version>
+                </DeviceIdentification>
+                <Connector moduleType="256" interface="Common.PCI" connectorId="0">
+                  <HostParameterSet />
+                </Connector>
+                <Connector moduleType="769" interface="SafetyInterface" connectorId="1">
+                  <HostParameterSet />
+                </Connector>
+                <DeviceParameterSet />
+              </DeviceType>
+            </Device>
+          </data>
+          <data name="configurations" handleUnknown="discard">
+            <configurations />
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>d2e476e7-4987-4b74-bd05-3ce4ae31a80a</ObjectId>
+          </data>
+        </addData>
+      </configuration>
+    </configurations>
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IEStoppable" ObjectId="93113c57-de1b-45a8-83d9-24348a8b1be7">
+        <Methods>
+          <Method name="executeEStop" ObjectId="b507e0fe-3503-424e-a614-1f0fa84aad3e">
+            <interface />
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IRunnable" ObjectId="c847f1a4-5874-49d5-93f0-4cb127c5d823">
+        <Methods>
+          <Method name="run" ObjectId="7a7dd7a6-3603-4536-8af2-5a45901e74b5">
+            <interface />
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IStoppable" ObjectId="3447fd21-0581-493d-90c9-ba5fcd93cc76">
+        <Methods>
+          <Method name="stop" ObjectId="641a0e68-b90c-4549-9f30-7a76bfa7cb59">
+            <interface />
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IEdge" ObjectId="6f4c985b-230f-4d02-a99f-6dedbae064ce">
+        <Methods>
+          <Method name="isRising" ObjectId="7295888e-307d-4f3f-8457-ccfd012f1f59">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isFalling" ObjectId="ac2969a2-d567-411a-b976-45a7aafefc12">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="ISensor" ObjectId="b6a60b58-d27e-49b2-9859-17e90b72aeb1">
+        <Methods>
+          <Method name="isOccupied" ObjectId="bcfcd008-66bd-497e-beb1-69595b5310a9">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isFree" ObjectId="5d63ea13-ded8-487c-bf7f-6503d0b54075">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IReciverInterface" ObjectId="85b0cfb7-68f4-4e47-8de7-c6ab5e71334a">
+        <Methods>
+          <Method name="readExtCondition2Rec" ObjectId="cb5a4723-682e-430c-bc60-c45773826f94">
+            <interface>
+              <returnType>
+                <derived name="IReciverInterface" />
+              </returnType>
+              <inputVars>
+                <variable name="receiveCondition">
+                  <type>
+                    <BOOL />
+                  </type>
+                  <documentation>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">condition 4 ready to receive</xhtml>
+                  </documentation>
+                </variable>
+              </inputVars>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">inject conditions for ready to receive</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isReceiving" ObjectId="c17c1b06-6b53-4aed-94af-ff89c4c16d0c">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="ISenderInterface" ObjectId="b9ff53d7-e2f4-4bea-ac72-f2e28b5ff65d">
+        <Methods>
+          <Method name="readExtCondition2Snd" ObjectId="265481c6-7c2f-4ca8-a7e4-0c9f8885959c">
+            <interface>
+              <returnType>
+                <derived name="ISenderInterface" />
+              </returnType>
+              <inputVars>
+                <variable name="sendCondition">
+                  <type>
+                    <BOOL />
+                  </type>
+                  <documentation>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">condition 4 ready 2 send</xhtml>
+                  </documentation>
+                </variable>
+              </inputVars>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">inject conditions for ready to receive</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isSending" ObjectId="93c9843c-ffcd-458c-b912-f23ba5b3fcd4">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="ISmema" ObjectId="22786a05-d4cc-426d-a491-5d80bb9ca37e">
+        <Methods>
+          <Method name="setCondition" ObjectId="7b2a225e-2b1b-4755-a054-c06467a216f7">
+            <interface>
+              <inputVars>
+                <variable name="smemaCondition">
+                  <type>
+                    <BOOL />
+                  </type>
+                  <documentation>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">must be ture to activate the smema interface</xhtml>
+                  </documentation>
+                </variable>
+              </inputVars>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isTransferActive" ObjectId="12bfb8b7-44f2-428d-9a21-503f4b9bfb49">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="ITwoStageLinearDrive" ObjectId="41bf5482-4617-4b5d-aff2-558b40d03073">
+        <Methods>
+          <Method name="fastForward" ObjectId="316ad0e2-5e6d-4f0c-a467-22781d0650f5">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="forward" ObjectId="a43f4ffd-3617-4ec6-b72b-ee01c5ff7a4f">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="fastBackward" ObjectId="7ca8dafa-0d4a-48aa-9c2b-8cb6b110ae63">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="backward" ObjectId="b87876bd-46e6-4420-a597-6b462f8d9d1d">
+            <interface />
+            <addData />
+          </Method>
+        </Methods>
+        <Inheritance>
+          <Extends>IStoppable</Extends>
+        </Inheritance>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="ITwoStageRotationDrive" ObjectId="d54d3c14-c5e5-4ea4-959a-6ca122fac554">
+        <Methods>
+          <Method name="fastClockwise" ObjectId="17f8e362-dd79-4801-a4bf-ab1d76a69648">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="clockwise" ObjectId="86e01848-ed9e-41c1-91e4-68b3ee28bbf3">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="fastCounterClockwise" ObjectId="8deebf1e-bdff-4657-aa4e-3b6f140cafb1">
+            <interface />
+            <addData />
+          </Method>
+          <Method name="counterClockwise" ObjectId="4008f524-037a-49ae-9cfb-7c39271dcca6">
+            <interface />
+            <addData />
+          </Method>
+        </Methods>
+        <Inheritance>
+          <Extends>IStoppable</Extends>
+        </Inheritance>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+      <Interface name="IMachineState" ObjectId="9bd731fa-cd5a-4c11-9728-a17f8c01d111">
+        <Methods>
+          <Method name="isMachineInInitMode" ObjectId="d31d8b05-5383-4cdd-b440-09163f97ef5a">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Init mode for first init cycle during start-up</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isMachineInIdle" ObjectId="6f6569de-d288-44bd-a91f-1b169a5849af">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Idle means machine is ready to change to setup or automatic mode</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isMachineInSetup" ObjectId="d803c8c5-eaaa-4407-b781-fe5712d38f1d">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">setup is for manually operated actions</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isMachineInAutomatic" ObjectId="a0a0da37-af82-4f14-bf48-7ff54c0a9de8">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">automatic means machine is running in production</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+          <Method name="isMachineInEstop" ObjectId="ffe06317-ee27-4d41-8a0f-c3d591409dfa">
+            <interface>
+              <returnType>
+                <BOOL />
+              </returnType>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">e-stop means machine is in e-stop</xhtml>
+              </documentation>
+            </interface>
+            <addData />
+          </Method>
+        </Methods>
+        <addData />
+      </Interface>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="Basic">
+          <Folder Name="Behaviour">
+            <Object Name="IRunnable" ObjectId="c847f1a4-5874-49d5-93f0-4cb127c5d823">
+              <Object Name="run" ObjectId="7a7dd7a6-3603-4536-8af2-5a45901e74b5" />
+            </Object>
+            <Object Name="IStoppable" ObjectId="3447fd21-0581-493d-90c9-ba5fcd93cc76">
+              <Object Name="stop" ObjectId="641a0e68-b90c-4549-9f30-7a76bfa7cb59" />
+            </Object>
+            <Object Name="IEStoppable" ObjectId="93113c57-de1b-45a8-83d9-24348a8b1be7">
+              <Object Name="executeEStop" ObjectId="b507e0fe-3503-424e-a614-1f0fa84aad3e" />
+            </Object>
+          </Folder>
+          <Folder Name="Sensor">
+            <Object Name="ISensor" ObjectId="b6a60b58-d27e-49b2-9859-17e90b72aeb1">
+              <Object Name="isOccupied" ObjectId="bcfcd008-66bd-497e-beb1-69595b5310a9" />
+              <Object Name="isFree" ObjectId="5d63ea13-ded8-487c-bf7f-6503d0b54075" />
+            </Object>
+            <Object Name="DebouncedDigitalSensor" ObjectId="b4be4fd4-dd51-4d62-a3df-50af1c0284b8">
+              <Object Name="isOccupied" ObjectId="c8615e63-7ab1-4129-adcd-e650e7eaa5c1" />
+              <Object Name="isFree" ObjectId="d8bad9e4-376d-4c5d-a38f-a8d85915d71f" />
+              <Object Name="isRising" ObjectId="0c72f464-c2f7-451d-863b-f1338adee3b7" />
+              <Object Name="isFalling" ObjectId="d50afd8d-7625-4b44-bec7-47893ba2ae07" />
+              <Object Name="FB_INIT" ObjectId="2f7fe2d4-9d87-4906-950c-00bbe824f29e" />
+              <Object Name="isSensorInState" ObjectId="299f2d2b-b37f-4956-97c6-ac8c915fdbcb" />
+              <Object Name="updateState" ObjectId="75fffe19-960d-43d7-a10b-494c17f0abfd" />
+            </Object>
+          </Folder>
+          <Folder Name="Edge">
+            <Object Name="IEdge" ObjectId="6f4c985b-230f-4d02-a99f-6dedbae064ce">
+              <Object Name="isRising" ObjectId="7295888e-307d-4f3f-8457-ccfd012f1f59" />
+              <Object Name="isFalling" ObjectId="ac2969a2-d567-411a-b976-45a7aafefc12" />
+            </Object>
+          </Folder>
+        </Folder>
+        <Folder Name="Communication">
+          <Object Name="IReciverInterface" ObjectId="85b0cfb7-68f4-4e47-8de7-c6ab5e71334a">
+            <Object Name="readExtCondition2Rec" ObjectId="cb5a4723-682e-430c-bc60-c45773826f94" />
+            <Object Name="isReceiving" ObjectId="c17c1b06-6b53-4aed-94af-ff89c4c16d0c" />
+          </Object>
+          <Object Name="ISenderInterface" ObjectId="b9ff53d7-e2f4-4bea-ac72-f2e28b5ff65d">
+            <Object Name="readExtCondition2Snd" ObjectId="265481c6-7c2f-4ca8-a7e4-0c9f8885959c" />
+            <Object Name="isSending" ObjectId="93c9843c-ffcd-458c-b912-f23ba5b3fcd4" />
+          </Object>
+          <Folder Name="SMEMA">
+            <Object Name="ISmema" ObjectId="22786a05-d4cc-426d-a491-5d80bb9ca37e">
+              <Object Name="setCondition" ObjectId="7b2a225e-2b1b-4755-a054-c06467a216f7" />
+              <Object Name="isTransferActive" ObjectId="12bfb8b7-44f2-428d-9a21-503f4b9bfb49" />
+            </Object>
+            <Object Name="SmemaInterface" ObjectId="facc9cc0-fb52-4a8b-b6f6-a76b91c2e1d0">
+              <Object Name="setCondition" ObjectId="69f96301-1207-4529-a4d3-3055576b3e35" />
+              <Object Name="isTransferActive" ObjectId="ba2ae10a-64f3-404e-bca5-334c1f9b7eb0" />
+              <Object Name="FB_INIT" ObjectId="bff28365-e450-4978-8d65-5c42a1c8afe0" />
+            </Object>
+            <Object Name="SmemaReceiver" ObjectId="f25e9816-ed8a-4311-91fe-c9a6ec2a68ed">
+              <Object Name="isReceiving" ObjectId="e7a7bd02-822c-4762-b05e-45d571eb6446" />
+              <Object Name="readExtCondition2Rec" ObjectId="31d78c54-1785-4c8b-b286-426985a64b7e" />
+              <Object Name="FB_INIT" ObjectId="e933a24f-3fe2-43bd-9206-301a1c862b03" />
+            </Object>
+            <Object Name="SmemaSender" ObjectId="922a5d51-806f-4ece-9cc6-ab1e9342fb09">
+              <Object Name="readExtCondition2Snd" ObjectId="a420a089-da7b-44bc-b1fe-82f00e41a459" />
+              <Object Name="isSending" ObjectId="04a20bc2-dc04-4607-95c4-a3e3ba185e52" />
+              <Object Name="FB_INIT" ObjectId="173f5119-02b7-4d55-b81b-e2a4ef63eba1" />
+            </Object>
+          </Folder>
+        </Folder>
+        <Folder Name="Conveyor">
+          <Object Name="Conveyor2ndTry" ObjectId="9d422d75-dd12-4a2e-ae88-a17bd418141a">
+            <Object Name="run" ObjectId="794b9617-307d-401f-a5db-09714e658970" />
+            <Object Name="FB_INIT" ObjectId="402c3113-696e-4897-a330-7cbdaa3c320e" />
+            <Object Name="isEmpty" ObjectId="a4d6a243-5f46-4f56-af82-11a3eb5a1b7d" />
+            <Object Name="isAligned" ObjectId="412d3c38-7904-45b8-9f50-1ca753e1d63b" />
+            <Object Name="isOccupiedInfeed" ObjectId="c673acfe-2464-43ef-86b4-900fa0eb33c9" />
+            <Object Name="isOccupiedOutfeed" ObjectId="847d749d-7755-4210-8894-c1e8bc4d46ed" />
+          </Object>
+        </Folder>
+        <Object Name="Device" ObjectId="d2e476e7-4987-4b74-bd05-3ce4ae31a80a">
+          <Object Name="Application" ObjectId="2244d426-13f3-4a7f-ae54-c81178c42401">
+            <Object Name="Bibliotheksverwalter" ObjectId="d3a42130-9d0e-4a44-a279-c07a94ca0474" />
+            <Object Name="PLC_PRG" ObjectId="ff3c9587-4c2d-4ea2-9caf-47eace0bfa18" />
+            <Object Name="MainTask" ObjectId="2413f542-0316-481f-b8ae-9671d32da7e9" />
+          </Object>
+        </Object>
+        <Folder Name="Drive">
+          <Folder Name="LinearDrive">
+            <Object Name="ITwoStageLinearDrive" ObjectId="41bf5482-4617-4b5d-aff2-558b40d03073">
+              <Object Name="fastForward" ObjectId="316ad0e2-5e6d-4f0c-a467-22781d0650f5" />
+              <Object Name="forward" ObjectId="a43f4ffd-3617-4ec6-b72b-ee01c5ff7a4f" />
+              <Object Name="fastBackward" ObjectId="7ca8dafa-0d4a-48aa-9c2b-8cb6b110ae63" />
+              <Object Name="backward" ObjectId="b87876bd-46e6-4420-a597-6b462f8d9d1d" />
+            </Object>
+          </Folder>
+          <Folder Name="RotationalDrive">
+            <Object Name="ITwoStageRotationDrive" ObjectId="d54d3c14-c5e5-4ea4-959a-6ca122fac554">
+              <Object Name="fastClockwise" ObjectId="17f8e362-dd79-4801-a4bf-ab1d76a69648" />
+              <Object Name="clockwise" ObjectId="86e01848-ed9e-41c1-91e4-68b3ee28bbf3" />
+              <Object Name="fastCounterClockwise" ObjectId="8deebf1e-bdff-4657-aa4e-3b6f140cafb1" />
+              <Object Name="counterClockwise" ObjectId="4008f524-037a-49ae-9cfb-7c39271dcca6" />
+            </Object>
+          </Folder>
+          <Object Name="ACommonTwoStageDrive" ObjectId="6ed7a201-c2f8-474e-a7df-319702eec6ab">
+            <Object Name="stop" ObjectId="c2a92686-3cc1-4419-b246-fb3827f49f0d" />
+            <Object Name="fastForward" ObjectId="75903dbb-6ad4-4615-aee4-e8b796bd96b6" />
+            <Object Name="forward" ObjectId="64c93dce-4388-42ba-a118-268cf32825bf" />
+            <Object Name="fastBackward" ObjectId="1ea5b2c1-2187-45e1-8c93-9794e509c588" />
+            <Object Name="backward" ObjectId="b88c6e1d-b74a-481a-9fbd-04309619189d" />
+            <Object Name="fastClockwise" ObjectId="38307ffc-5e50-4fb2-8e5f-815807b6f518" />
+            <Object Name="clockwise" ObjectId="43a9f140-eee9-4855-9d03-9f428777df17" />
+            <Object Name="fastCounterClockwise" ObjectId="c630041a-6f8f-40bc-90eb-af8bc3b86202" />
+            <Object Name="counterClockwise" ObjectId="ebb01047-f7bc-4277-bf79-f4b67b61c0a7" />
+            <Object Name="executeEStop" ObjectId="ec4a429f-5e84-4ec3-9a03-612db1c89e95" />
+            <Object Name="FB_INIT" ObjectId="4235c862-8fa5-4188-9de8-7c70a9973196" />
+          </Object>
+          <Object Name="Acme2StageDrive" ObjectId="b8335d88-2d7b-483b-92e1-48c04da77f94">
+            <Object Name="stop" ObjectId="25c98963-25a7-48fc-be8d-3afb2ccf1932" />
+            <Object Name="fastForward" ObjectId="8162284f-1a1f-4ccc-b2ed-ec0ef75def83" />
+            <Object Name="forward" ObjectId="0e9e97ec-0783-40fb-bbfa-97a819ec675d" />
+            <Object Name="fastBackward" ObjectId="c1bac4be-d0de-4a66-8c67-95bf2dd8fa39" />
+            <Object Name="backward" ObjectId="c0da56eb-2a8b-4807-a095-7b6c5e1a991c" />
+            <Object Name="fastClockwise" ObjectId="0fc8a6ce-3d48-402d-b1f3-a5b2355bac21" />
+            <Object Name="clockwise" ObjectId="7669b03a-0c72-425d-a5ce-aa0def713685" />
+            <Object Name="fastCounterClockwise" ObjectId="0c977135-8dcd-494b-8cb2-30125d56bb8b" />
+            <Object Name="counterClockwise" ObjectId="d1345282-80b3-45be-8505-d37676325d09" />
+            <Object Name="executeEStop" ObjectId="e65f3053-355a-4a41-853e-aa2d9c8da153" />
+            <Object Name="FB_INIT" ObjectId="8b422f1f-6504-4cc7-9c28-fd030d9f06d6" />
+            <Object Name="StartMotor" ObjectId="9e36ebfe-b76a-42c0-bae8-7f22b5b661c3" />
+          </Object>
+        </Folder>
+        <Folder Name="Machine">
+          <Object Name="IMachineState" ObjectId="9bd731fa-cd5a-4c11-9728-a17f8c01d111">
+            <Object Name="isMachineInInitMode" ObjectId="d31d8b05-5383-4cdd-b440-09163f97ef5a" />
+            <Object Name="isMachineInIdle" ObjectId="6f6569de-d288-44bd-a91f-1b169a5849af" />
+            <Object Name="isMachineInSetup" ObjectId="d803c8c5-eaaa-4407-b781-fe5712d38f1d" />
+            <Object Name="isMachineInAutomatic" ObjectId="a0a0da37-af82-4f14-bf48-7ff54c0a9de8" />
+            <Object Name="isMachineInEstop" ObjectId="ffe06317-ee27-4d41-8a0f-c3d591409dfa" />
+          </Object>
+        </Folder>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
