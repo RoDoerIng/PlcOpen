@@ -8,21 +8,23 @@ namespace PlcOpen.Model
 {
     class PlcOpenProject
     {
-        
-        private List<projectTypesDataType> dataTypes;
+        private project projectField;
+
 
         public List<projectTypesDataType> DataTypes
         {
-            get { return dataTypes; }
-            set { dataTypes = value; }
+            get { return this.projectField.types.dataTypes.ToList(); }
         }
 
-        private List<projectTypesPou> pous;
 
         public List<projectTypesPou> Pous
         {
-            get { return pous; }
-            set { pous = value; }
+            get { return this.projectField.types.pous.ToList(); }
+        }
+
+        public PlcOpenProject(project plcOpenProject)
+        {
+            this.projectField = plcOpenProject;
         }
 
 
