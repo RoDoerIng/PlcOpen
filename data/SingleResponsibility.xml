@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+<project xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP10 Patch 4" creationDateTime="2017-07-22T20:32:32.9692432" />
   <contentHeader name="SingleResponsibility.project" modificationDateTime="2017-06-30T11:24:00.4798052">
     <coordinateInfo>

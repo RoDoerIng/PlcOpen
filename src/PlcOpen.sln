@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{3476ACE7-2003-48C1-97E9-267D1FF99FD7}"
 	ProjectSection(SolutionItems) = preProject
 		..\data\SingleResponsibility.xml = ..\data\SingleResponsibility.xml
+		..\doc\PLCopen\tc6_xml_v201.xsd = ..\doc\PLCopen\tc6_xml_v201.xsd
 	EndProjectSection
 EndProject
 Global
